@@ -31,9 +31,9 @@ Constraints:
 
 **Qué intentaba lograr:** el artefacto entero de una sola vez, nombrando las capas estructurales, la paleta de estilo Windows 98 y el comportamiento interactivo basado en un estado explícito (`valores` e `indiceActual`) para sentar la mecánica base de la Bad UI.
 
-**Qué devolvió:** el esqueleto funcional en un solo archivo con el comportamiento solicitado. Hubo un problema técnico con la extensión del navegador que bloqueó el previsualizador del Canvas, por lo que el código se descargó para probarlo.
+**Qué devolvió:** el esqueleto funcional en un solo archivo con el comportamiento solicitado y el estilo idéntico a Windows 98. 
 
-**Qué hice con eso:** lo probé de forma local en el navegador. Al confirmar que la trampa de interacción funcionaba correctamente, pasé a diseñar la segunda iteración para agregar el castigo al usuario.
+**Qué hice con eso:** lo probé de forma local en el navegador. Al confirmar que la la funcionalidad estaba correcta, pasé a diseñar la segunda iteración: agregar un castigo extra al usuario para evitar que pueda pasar fácil de la interfaz con un número de teléfono no válido.
 
 ---
 
@@ -41,23 +41,23 @@ Constraints:
 
 ```text
 Agregale al ingreso de teléfono un estado para manejar un error "isErrorOpen" inicializado en false.
-- Al recibir un click en "Enviar", tomá los índices 0, 1 y 2 del array "valores" y unilos en un solo número (por ejemplo, si son 0, 1 y 0, el valor es 10). Si el valor es <= 11: isErrorOpen = true.
+- Al recibir un click en "Enviar", tomá los índices 0, 1 y 2 del array "valores" y unilos en un solo número (por ejemplo, si son 0, 1 y 0, el valor es 10). Si el valor es < 11: isErrorOpen = true.
 Mutación del DOM: Mostrá un pop-up modal centrado por encima de la interfaz. Estilo Windows 98 estricto: borde outset, barra de título azul oscuro con un botón "X" en la esquina, un ícono de cruz roja de error típica de Windows en el cuerpo, y el texto "Código de área incorrecto".
 - Al hacer click en la "X" del pop-up, isErrorOpen = false. Además, ejecutá la misma lógica del botón "Limpiar": el array "valores" vuelve todo a 0, y el "indiceActual" vuelve a 9. Modifica el DOM para ocultar el pop-up. Actualizá los 10 <input> para que vuelvan a mostrar "0", mové el indicador visual de selección de nuevo al extremo derecho, y volvé a deshabilitar (con el atributo disabled) al botón "Enviar" del <footer>. 
 ```
 
-**Qué intentaba lograr:** agregar el castigo principal de la Bad UI usando el Patrón 2. La clave era definir explícitamente la condición de vuelta (cerrar el pop-up de error) atada a un reseteo total del estado (`valores` a 0, `indiceActual` a 9). Si el usuario comete un error tras tantos clicks en el falso trámite automotor, el sistema lo devuelve a la casilla de salida sin piedad.
+**Qué intentaba lograr:** agregar el castigo principal de la Bad UI utilizando un pop-up de error que tanto desespera cuando nos ocurre. No podés ingresar un número telefónico que al menos no tenga un código de área válido en Argentina. La clave era definir explícitamente la condición de vuelta (cerrar el pop-up de error) atada a un reseteo total del estado (`valores` a 0, `indiceActual` a 9). Si el usuario comete un error tras tantos clicks en el falso trámite automotor, el sistema lo devuelve a la casilla de salida sin piedad.
 
 **Qué devolvió:** el modal de error integrado por encima de la interfaz y la lógica de lectura de los primeros tres índices funcionando. Al hacer click en la "X", el DOM se limpia por completo reflejando la pérdida del progreso.
 
-**Qué hice con eso:** validé la mecánica de frustración y pasé a diseñar la tercera iteración para manejar la condición opuesta: el mensaje de "éxito" burocrático que también termina expulsando al usuario al inicio.
+**Qué hice con eso:** validé la mecánica de frustración y pasé a diseñar la tercera iteración: darle el contexto a la UI, no sirve de nada un formulario que sólo te pida un teléfono, el usuario debe querer llegar hasta ese punto.
 
 ---
 
-## 3 — Envolver en un flujo de dos pasos (Wizard)
+## 3 — Envolver en un flujo de dos pasos (tipo Wizard)
 
 ```text
-Vamos a convertir esta interfaz en un flujo de dos pasos (wizard), manteniendo todo en un solo archivo, con el mismo estilo de Windows 98:
+Vamos a convertir esta interfaz en un flujo de dos pasos, manteniendo todo en un solo archivo, con el mismo estilo de Windows 98:
 
 Envolvé todo el código actual del teléfono en un <section id="paso2"> y que quede oculto.
 Creá un nuevo <section id="paso1"> que sea la pantalla inicial. Debe tener un título "Dirección Nacional - Alta de Dominio". Adentro, un formulario normal con <input type="text"> para Nombre, Apellido, DNI y Patente. Debajo, un botón "Validar Datos".
@@ -70,11 +70,11 @@ Usá un setTimeout de 3 segundos. Cuando termine, ocultá el #loader, mostrá el
 La lógica del teléfono incremental y del pop-up de error que ya armamos debe mantenerse intacta en el Paso 2.
 ```
 
-**Qué intentaba lograr:** envolver la Bad UI en un contexto burocrático que genere falsa confianza. Al simular un trámite real de transferencia o alta de dominio automotor, el contraste con el formulario absurdo del teléfono es mucho más frustrante. El uso del loader de 3 segundos suma ansiedad antes de revelar la trampa.
+**Qué intentaba lograr:** envolver la UI en un contexto burocrático que genere falsa confianza. Al simular un trámite real de transferencia o alta de dominio automotor, el contraste con el formulario absurdo del teléfono es mucho más frustrante. El uso del loader de 3 segundos le da un toque de realismo y suma ansiedad antes de revelar la trampa.
 
-**Qué devolvió:** la estructura de pasos funcionando correctamente usando la manipulación del DOM. El formulario inicial carga con normalidad, la transición con `setTimeout` bloquea la pantalla simulando el procesamiento, y finalmente revela el Paso 2 manteniendo intacta la lógica de error y reseteo de los prompts anteriores.
+**Qué devolvió:** la estructura de pasos funcionando correctamente usando la manipulación del DOM. El formulario inicial carga con normalidad, la transición con `setTimeout` bloquea la pantalla simulando el procesamiento, y finalmente revela el Paso 2 manteniendo intacta la lógica de error y reseteo de los prompts anteriores. Algo que no me di cuenta hasta ese momento (error mío en el diseño) era que nada sucedía si el número ingresado era correcto, lo cual perdía un poco de sentido (aunque es igual de frustrante darle al botón "Aceptar" y que nada suceda). Aquí el Gemini Canvas falló en el preview de la interfaz, por lo que tuve que descargar el HTML y ejecutarlo local.
 
-**Qué hice con eso:** validé que la secuencia de cambio de DOM no rompiera el estado del teléfono. Una vez confirmado que el flujo del trámite funcionaba, quedó todo el terreno preparado para la cuarta iteración: el falso mensaje de éxito que devuelve al usuario al inicio.
+**Qué hice con eso:** validé que la secuencia de cambio de DOM no rompiera el estado del teléfono. Una vez confirmado que el flujo del trámite funcionaba, lo único que faltaba era cerrar el lazo con la condición de "éxito" (o el falso mensaje de éxito que devuelve al usuario al inicio).
 
 ---
 
@@ -87,8 +87,8 @@ Al click en la "X" o en el botón "Aceptar" del pop-up de éxito: Efecto en el E
 Ocultá el pop-up de éxito. Ocultá el #paso2 y volvé a mostrar el #paso1 (el formulario de datos inicial). Vaciá los <input> de Nombre, Apellido, DNI y Patente para que el bucle vuelva a empezar desde cero. 
 ```
 
-**Qué intentaba lograr:** cerrar el flujo de la Bad UI con la burla final. En lugar de que el éxito libere al usuario tras completar el trámite, el botón de "Aceptar" actúa como una trampa. Al vaciar los inputs del primer paso y devolver el DOM a la pantalla inicial, el alta del dominio se convierte en un bucle infinito del que no se puede escapar. 
+**Qué intentaba lograr:** cerrar el flujo de la Bad UI. Aquí se puede interpretar de 2 maneras: asumir que el número se registró correctamente (lo ideal para evitar mayor frustración) o, que en lugar de que el éxito libere al usuario, el botón de "Aceptar" te devuelva al inicio del trámite, transformándose en un bucle infinito. 
 
 **Qué devolvió:** el modal de éxito con la estética clásica de Windows 98 (ícono de información incluido) y la lógica de ruteo funcionando a la perfección. Al hacer click en "Aceptar" o en la "X", el sistema oculta el paso 2, muestra el paso 1 y limpia el DOM eliminando todos los strings de los inputs iniciales.
 
-**Qué hice con eso:** con esta última iteración di por terminado el código. El archivo quedó completamente funcional, en un solo `index.html`, cumpliendo con todos los constraints técnicos. Con esto, el registro del proceso para `prompts.md` ya está listo para acompañar la entrega.
+**Qué hice con eso:** con esta última iteración di por terminado el código. El archivo quedó completamente funcional, en un solo `index.html`, cumpliendo con todos los constraints técnicos.
