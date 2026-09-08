@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingreso Incremental - Win98</title>
+    <style>
+        :root {
+            --win-bg: #c0c0c0;
+            --win-blue: #000080;
+            --win-white: #ffffff;
+            --win-black: #000000;
+            --win-border-light: #dfdfdf;
+            --win-border-dark: #808080;
+            --win-teal-desktop: #008080;
+        }
+
+        body {
+            background-color: var(--win-teal-desktop);
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            user-select: none;
+        }
+
+        .window {
+            background-color: var(--win-bg);
+            border-top: 2px solid var(--win-white);
+            border-left: 2px solid var(--win-white);
+            border-right: 2px solid var(--win-black);
+            border-bottom: 2px solid var(--win-black);
+            box-shadow: inset -1px -1px var(--win-border-dark), inset 1px 1px var(--win-border-light);
+            padding: 2px;
+            width: 420px;
+        }
+
+        header h1 {
+            background-color: var(--win-blue);
+            color: var(--win-white);
+            font-size: 14px;
+            font-weight: bold;
+            margin: 0;
+            padding: 4px 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header p {
+            font-size: 13px;
+            margin: 12px 10px;
+            color: var(--win-black);
+        }
+
+        main {
+            padding: 0 10px;
+        }
+
+        /* --- Paso 1 --- */
+        .form-container {
+            padding: 15px 10px;
+        }
+
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            color: var(--win-black);
+        }
+
+        .form-group input {
+            width: 180px;
+            padding: 2px 4px;
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            background-color: var(--win-white);
+            color: var(--win-black);
+            border-top: 2px solid var(--win-border-dark);
+            border-left: 2px solid var(--win-border-dark);
+            border-right: 2px solid var(--win-white);
+            border-bottom: 2px solid var(--win-white);
+            box-shadow: inset 1px 1px var(--win-black);
+            outline: none;
+        }
+
+        /* --- Loader --- */
+        #loader main {
+            padding: 20px 15px;
+            text-align: center;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 22px;
+            background-color: var(--win-bg);
+            border-top: 2px solid var(--win-border-dark);
+            border-left: 2px solid var(--win-border-dark);
+            border-right: 2px solid var(--win-white);
+            border-bottom: 2px solid var(--win-white);
+            box-shadow: inset 1px 1px var(--win-black);
+            padding: 2px;
+            margin-top: 15px;
+            box-sizing: border-box;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background-color: var(--win-blue);
+            width: 0%;
+            transition: width 3s linear;
+        }
+
+        /* --- Paso 2: Inputs Teléfono --- */
+        .inputs-group {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .inputs-group input {
+            width: 24px;
+            height: 28px;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            background-color: var(--win-white);
+            color: var(--win-black);
+            border-top: 2px solid var(--win-border-dark);
+            border-left: 2px solid var(--win-border-dark);
+            border-right: 2px solid var(--win-white);
+            border-bottom: 2px solid var(--win-white);
+            box-shadow: inset 1px 1px var(--win-black);
+            outline: none;
+            cursor: default;
+        }
+
+        .inputs-group input.seleccionado {
+            background-color: var(--win-blue);
+            color: var(--win-white);
+        }
+
+        .buttons-group {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        button {
+            background-color: var(--win-bg);
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            padding: 4px 12px;
+            color: var(--win-black);
+            cursor: pointer;
+            border-top: 2px solid var(--win-white);
+            border-left: 2px solid var(--win-white);
+            border-right: 2px solid var(--win-black);
+            border-bottom: 2px solid var(--win-black);
+            box-shadow: inset -1px -1px var(--win-border-dark), inset 1px 1px var(--win-border-light);
+        }
+
+        button:active:not(:disabled) {
+            border-top: 2px solid var(--win-black);
+            border-left: 2px solid var(--win-black);
+            border-right: 2px solid var(--win-white);
+            border-bottom: 2px solid var(--win-white);
+            box-shadow: inset 1px 1px var(--win-border-dark), inset -1px -1px var(--win-border-light);
+            padding: 5px 11px 3px 13px;
+        }
+
+        button:disabled {
+            color: var(--win-border-dark);
+            text-shadow: 1px 1px var(--win-white);
+            cursor: not-allowed;
+        }
+
+        footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin-top: 10px;
+            border-top: 2px solid var(--win-border-dark);
+            box-shadow: inset 0 1px var(--win-white);
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 12px;
+        }
+
+        /* --- Modales --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.3);
+            display: none; /* Oculto por defecto */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-window {
+            width: 320px;
+        }
+
+        .modal-btn-close {
+            background-color: var(--win-bg);
+            border-top: 1px solid var(--win-white);
+            border-left: 1px solid var(--win-white);
+            border-right: 1px solid var(--win-black);
+            border-bottom: 1px solid var(--win-black);
+            padding: 0 4px;
+            font-weight: bold;
+            font-size: 10px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .modal-content {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background-color: var(--win-bg);
+        }
+
+        .icon-error {
+            width: 32px;
+            height: 32px;
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 20px;
+            border: 2px solid var(--win-white);
+            box-shadow: 1px 1px var(--win-black);
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .icon-info {
+            width: 32px;
+            height: 32px;
+            background-color: var(--win-white);
+            color: var(--win-blue);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: "Times New Roman", Times, serif;
+            font-style: italic;
+            font-weight: bold;
+            font-size: 22px;
+            border: 2px solid var(--win-blue);
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .modal-text {
+            font-size: 13px;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+            background-color: var(--win-bg);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PASO 1: Formulario Inicial -->
+    <section class="window" id="paso1">
+        <header>
+            <h1>Dirección Nacional - Alta de Dominio</h1>
+        </header>
+        <main class="form-container">
+            <div class="form-group">
+                <label>Nombre:</label>
+                <input type="text" id="input-nombre">
+            </div>
+            <div class="form-group">
+                <label>Apellido:</label>
+                <input type="text" id="input-apellido">
+            </div>
+            <div class="form-group">
+                <label>DNI:</label>
+                <input type="text" id="input-dni">
+            </div>
+            <div class="form-group">
+                <label>Patente:</label>
+                <input type="text" id="input-patente">
+            </div>
+        </main>
+        <footer>
+            <p></p>
+            <button id="btn-validar-datos">Validar Datos</button>
+        </footer>
+    </section>
+
+    <!-- LOADER: Ventana de Carga -->
+    <div class="window" id="loader" style="display: none;">
+        <header>
+            <h1>Validando...</h1>
+        </header>
+        <main>
+            <p style="font-size: 13px;">Validando en base de datos central...</p>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progress-fill"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- PASO 2: Ingreso de Teléfono -->
+    <section class="window" id="paso2" style="display: none;">
+        <header>
+            <h1>Número telefónico</h1>
+            <p id="telefono-subtitle">Ingrese su número telefónico, con codigo de area.</p>
+        </header>
+        <main>
+            <div class="inputs-group" id="contenedor-inputs">
+                <input type="text" readonly value="0">
+                <input type="text" readonly value="0">
+                <input type="text" readonly value="0">
+                <input type="text" readonly value="0">
+                <input type="text" readonly value="0">
+                <input type="text" readonly value="0">
+                <input type="text" readonly value="0">
+                <input type="text" readonly value="0">
+                <input type="text" readonly value="0">
+                <input type="text" readonly value="0">
+            </div>
+            <div class="buttons-group">
+                <button id="btn-sumar">+1</button>
+                <button id="btn-siguiente">Siguiente Número</button>
+                <button id="btn-limpiar">Limpiar</button>
+            </div>
+        </main>
+        <footer>
+            <p>Al terminar, presione 'Enviar'</p>
+            <button id="btn-enviar" disabled>Enviar</button>
+        </footer>
+    </section>
+
+    <!-- MODAL DE ERROR -->
+    <div class="modal-overlay" id="modal-error">
+        <div class="window modal-window">
+            <header>
+                <h1>Error</h1>
+                <button class="modal-btn-close" id="btn-close-error">X</button>
+            </header>
+            <div class="modal-content">
+                <div class="icon-error">X</div>
+                <div class="modal-text">Código de área incorrecto.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE ÉXITO -->
+    <div class="modal-overlay" id="modal-success">
+        <div class="window modal-window">
+            <header>
+                <h1>Información</h1>
+                <button class="modal-btn-close" id="btn-close-success">X</button>
+            </header>
+            <div class="modal-content">
+                <div class="icon-info">i</div>
+                <div class="modal-text">El trámite fue completado correctamente.</div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-aceptar-success">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Referencias del DOM
+            const paso1 = document.getElementById('paso1');
+            const loader = document.getElementById('loader');
+            const paso2 = document.getElementById('paso2');
+            const btnValidarDatos = document.getElementById('btn-validar-datos');
+            const progressFill = document.getElementById('progress-fill');
+            const telefonoSubtitle = document.getElementById('telefono-subtitle');
+            
+            const inputs = document.querySelectorAll('#contenedor-inputs input');
+            const btnSumar = document.getElementById('btn-sumar');
+            const btnSiguiente = document.getElementById('btn-siguiente');
+            const btnLimpiar = document.getElementById('btn-limpiar');
+            const btnEnviar = document.getElementById('btn-enviar');
+
+            const modalError = document.getElementById('modal-error');
+            const btnCloseError = document.getElementById('btn-close-error');
+
+            const modalSuccess = document.getElementById('modal-success');
+            const btnCloseSuccess = document.getElementById('btn-close-success');
+            const btnAceptarSuccess = document.getElementById('btn-aceptar-success');
+
+            const inputsPaso1 = document.querySelectorAll('#paso1 input');
+
+            // Estado
+            let pasoActual = 1;
+            let valores = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+            let indiceActual = 9;
+            let isErrorOpen = false;
+            let isSuccessOpen = false;
+
+            // --- Lógica del Wizard (Transición de Pasos) ---
+            btnValidarDatos.addEventListener('click', () => {
+                paso1.style.display = 'none';
+                loader.style.display = 'block';
+                
+                // Reiniciar y animar barra de progreso
+                progressFill.style.transition = 'none';
+                progressFill.style.width = '0%';
+                
+                setTimeout(() => {
+                    progressFill.style.transition = 'width 3s linear';
+                    progressFill.style.width = '100%';
+                }, 50);
+
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    paso2.style.display = 'block';
+                    telefonoSubtitle.textContent = "Dominio validado correctamente. Para finalizar el trámite, ingrese su teléfono de contacto local.";
+                    pasoActual = 2;
+                }, 3000);
+            });
+
+            // --- Lógica del Teléfono Incremental ---
+            function actualizarDOM() {
+                inputs.forEach((input, index) => {
+                    input.value = valores[index];
+                    if (index === indiceActual) {
+                        input.classList.add('seleccionado');
+                    } else {
+                        input.classList.remove('seleccionado');
+                    }
+                });
+                btnEnviar.disabled = (indiceActual !== 0);
+            }
+
+            btnSumar.addEventListener('click', () => {
+                valores[indiceActual] = (valores[indiceActual] + 1) % 10;
+                actualizarDOM();
+            });
+
+            btnSiguiente.addEventListener('click', () => {
+                if (indiceActual > 0) {
+                    indiceActual--;
+                    actualizarDOM();
+                }
+            });
+
+            function resetearTelefono() {
+                valores = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                indiceActual = 9;
+                actualizarDOM();
+            }
+
+            btnLimpiar.addEventListener('click', resetearTelefono);
+
+            // --- Lógica del botón Enviar y Modales ---
+            btnEnviar.addEventListener('click', () => {
+                // Tomamos los primeros 3 valores y los unimos como número
+                const codigoAreaString = `${valores[0]}${valores[1]}${valores[2]}`;
+                const codigoArea = parseInt(codigoAreaString, 10);
+
+                if (codigoArea < 11) {
+                    isErrorOpen = true;
+                    modalError.style.display = 'flex';
+                } else {
+                    isSuccessOpen = true;
+                    modalSuccess.style.display = 'flex';
+                }
+            });
+
+            // Cerrar Error
+            btnCloseError.addEventListener('click', () => {
+                isErrorOpen = false;
+                modalError.style.display = 'none';
+                resetearTelefono();
+            });
+
+            // Cerrar Éxito y volver al inicio
+            function procesarExito() {
+                isSuccessOpen = false;
+                modalSuccess.style.display = 'none';
+                
+                // Reiniciar estado y variables
+                pasoActual = 1;
+                resetearTelefono();
+                
+                // Ocultar paso 2, mostrar paso 1
+                paso2.style.display = 'none';
+                paso1.style.display = 'block';
+                
+                // Vaciar campos del formulario inicial
+                inputsPaso1.forEach(input => input.value = '');
+            }
+
+            btnCloseSuccess.addEventListener('click', procesarExito);
+            btnAceptarSuccess.addEventListener('click', procesarExito);
+
+            // Inicializar DOM
+            actualizarDOM();
+        });
+    </script>
+</body>
+</html>
