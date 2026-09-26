@@ -9,9 +9,11 @@ Repositorio del curso Introducción a la ingeniería de software asistida por In
 | Entrega | Carpeta | Estado |
 |---------|---------|--------|
 | TP 1 | [tp1/](tp1/) | Resuelto |
-| TP 2 | [tp2/](tp2/) | Pendiente |
-| Trabajo Práctico Final | [tp-final/](tp-final/) | Pendiente |
+| TP 2 | [tp2/](tp2/) | Resuelto |
+| Trabajo Práctico Final | [tp-final/](tp-final/) | En progreso |
 
 ## Comentarios
 
 08/09/2026 - Se sube TP1 resuelto
+
+26/09/2026 - Se sube TP2 resuelto
